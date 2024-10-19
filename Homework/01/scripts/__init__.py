@@ -1,5 +1,5 @@
-import sys
-sys.path.insert(0, '/home/anna/python/VK/llm-course-2024-autumn/Homework/01/scripts')
+# import sys
+# sys.path.insert(0, '/home/anna/python/VK/llm-course-2024-autumn/Homework/01/scripts')
 
 from tokenizer import ByteTokenizer
 from model import Model
