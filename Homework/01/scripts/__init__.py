@@ -8,7 +8,7 @@
 # from trainer import Trainer
 # from generation import generate
 
-from .tokenizer import BpeTokenizer
+from scripts.tokenizer import BpeTokenizer
 from .model import Model
 from .dataset import MyDataset
 from .collator import Collator
