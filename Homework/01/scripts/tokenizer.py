@@ -293,11 +293,17 @@ class BpeTokenizer(ByteTokenizer):
 
         # Формируем исходный список номеров токенов для каждого текста (изначально это байты в кодировке utf-8)
         list_of_ids = [list(text.encode('utf-8')) for text in texts]
-
+        pair_dict = {}
         for _ in progress_bar:
             # Находим наиболее частотную пару токенов для склеивания в один токен
             cnt = count_pairs(list_of_ids)
-            pair = max(cnt, key=cnt.get)
+            max_key = max(cnt, key=cnt.get)
+            max_val = cnt[max_key]
+
+            for key in list(cnt.keys()):
+                if cnt[key] == max_val:
+                    pair_dict[key] = max_val
+            pair = max(pair_dict, key=lambda x: x)
             freq = cnt[pair]
             progress_bar.set_description(f'pair={pair}, freq={freq}')
 
@@ -312,6 +318,7 @@ class BpeTokenizer(ByteTokenizer):
             # Обновляем токенизацию для наших тренировочных текстов с учетом нового токена
             for i, ids in enumerate(list_of_ids):
                 list_of_ids[i] = merge(ids, pair, new_idx)
+            pair_dict.clear()
 
     def encode(self, text: str) -> List[int]:
         """
@@ -330,11 +337,19 @@ class BpeTokenizer(ByteTokenizer):
         # Формируем исходный список номеров токенов для данного текста (изначально это байты в кодировке utf-8)
         ids = list(text.encode('utf-8'))
         # Последовательно применяем таблицу склеиваний в том порядке, в котором добавлялись токены в словарь
+        pair_dict = {}
         while len(ids) > 1:
             cnt = count_pairs([ids])
-            pair = max(cnt, key=cnt.get)
+            max_val = cnt[max(cnt, key=cnt.get)]
+
+            for key in list(cnt.keys()):
+                if cnt[key] == max_val:
+                    pair_dict[key] = max_val
+            pair = max(pair_dict, key=lambda x: x)
+
             if pair not in self.merges:
                 break
             idx = self.merges[pair]
             ids = merge(ids, pair, idx)
+            pair_dict.clear()
         return ids
