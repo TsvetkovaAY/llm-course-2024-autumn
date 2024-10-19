@@ -1,8 +1,8 @@
 from typing import List, Optional
 from tqdm import tqdm
 from torch.utils.data import Dataset
-import tokenizer
-
+# import tokenizer
+from scripts.tokenizer import ByteTokenizer
 
 class MyDataset(Dataset):
     """
@@ -41,7 +41,8 @@ class MyDataset(Dataset):
     >>> dataset[0]
     [tokenizer.bos_token_id, 1, 2, 3, tokenizer.eos_token_id]  # Пример токенов
     """
-    def __init__(self, texts: List[str], tokenizer: tokenizer.ByteTokenizer, max_length: Optional[int] = None):
+    # def __init__(self, texts: List[str], tokenizer: tokenizer.ByteTokenizer, max_length: Optional[int] = None):
+    def __init__(self, texts: List[str], tokenizer: ByteTokenizer, max_length: Optional[int] = None):
         self.max_length = max_length
         self.data = []
 

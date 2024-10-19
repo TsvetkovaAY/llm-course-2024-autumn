@@ -1,9 +1,16 @@
+# import torch
+# import numpy as np
+# import torch.nn.functional as F
+# from typing import Optional
+# from model import Model
+# from tokenizer import ByteTokenizer
+
 import torch
 import numpy as np
 import torch.nn.functional as F
 from typing import Optional
-from model import Model
-from tokenizer import ByteTokenizer
+from scripts.model import Model
+from scripts.tokenizer import ByteTokenizer
 
 
 def generate(

@@ -4,7 +4,8 @@ from typing import List, Optional, Callable, Union
 from torch import Tensor
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
-from model import Model
+# from model import Model
+from scripts.model import Model
 
 class Trainer:
     """
