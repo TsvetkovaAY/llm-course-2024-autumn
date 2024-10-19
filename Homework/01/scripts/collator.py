@@ -44,5 +44,6 @@ class Collator:
                     [6, 0, 0]])
         """
         data = [torch.tensor(x, dtype=torch.long) for x in data]
-        data = pad_sequence(<YOUR CODE HERE>)
+
+        data = torch.transpose(pad_sequence(data), 0, 1)
         return data

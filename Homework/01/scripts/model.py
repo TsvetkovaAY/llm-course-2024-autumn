@@ -1,7 +1,7 @@
+import torch
 import torch.nn as nn
 from typing import Optional, Tuple
 from torch import Tensor
-
 
 class Model(nn.Module):
     """
@@ -36,9 +36,10 @@ class Model(nn.Module):
             dropout: float = 0.0
     ):
         super().__init__()
-        self.embeddings = nn.Embedding(<YOUR CODE HERE>)
-        self.lstm = nn.LSTM(<YOUR CODE HERE>)
-        self.logits = nn.Linear(<YOUR CODE HERE>)
+
+        self.embeddings = nn.Embedding(vocab_size, emb_size)
+        self.lstm = nn.LSTM(emb_size, hidden_size, num_layers, batch_first=True, dropout=dropout)
+        self.logits = nn.Linear(hidden_size, vocab_size)
 
     def forward(
             self,
@@ -49,7 +50,7 @@ class Model(nn.Module):
         Проводит прямое распространение через сеть.
 
         Аргументы:
-            x (Tensor): Входные данные (индексы слов) размером (batch_size, seq_len).
+            x (Tensor): Входные данные (индексы слов) размером (batch_size, seq_len). - input_data
             hx (Optional[Tuple[Tensor, Tensor]]): Начальные скрытые состояния (h_n, c_n) для LSTM. По умолчанию None.
 
         Возвращает:
@@ -57,4 +58,8 @@ class Model(nn.Module):
                 - Логиты (предсказания для каждого слова в последовательности) размером (batch_size, seq_len, vocab_size).
                 - Пара скрытых состояний (h_n, c_n), где h_n и c_n — это последние скрытые и клеточные состояния LSTM.
         """
-        <YOUR CODE HERE>
+        embeddings = self.embeddings(x)
+        output, (h_n, c_n) = self.lstm(embeddings, hx)
+        output_f = self.logits(output)
+
+        return output_f, (h_n, c_n)

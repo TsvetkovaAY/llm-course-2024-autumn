@@ -1,7 +1,7 @@
 from typing import List, Optional
 from tqdm import tqdm
 from torch.utils.data import Dataset
-from scripts.tokenizer import ByteTokenizer
+import tokenizer
 
 
 class MyDataset(Dataset):
@@ -34,19 +34,22 @@ class MyDataset(Dataset):
     Пример:
     ----------
     >>> texts = ["Привет, мир!", "Это тест."]
-    >>> tokenizer = ByteTokenizer()  # Предположим, что токенизатор уже реализован
+    >>> tokenizer = tokenizer.ByteTokenizer()  # Предположим, что токенизатор уже реализован
     >>> dataset = MyDataset(texts, tokenizer, max_length=10)
     >>> len(dataset)
     2
     >>> dataset[0]
     [tokenizer.bos_token_id, 1, 2, 3, tokenizer.eos_token_id]  # Пример токенов
     """
-    def __init__(self, texts: List[str], tokenizer: ByteTokenizer, max_length: Optional[int] = None):
+    def __init__(self, texts: List[str], tokenizer: tokenizer.ByteTokenizer, max_length: Optional[int] = None):
         self.max_length = max_length
         self.data = []
+
         for text in tqdm(texts):
             # Получаем список токенов (номеров) для данного текста и добавляем к началу и концу спецтокены bos, eos (см. пример)
-            token_ids = <YOUR CODE HERE>
+            token_ids = tokenizer.encode(text)
+            token_ids.insert(0, tokenizer.bos_token_id)
+            token_ids.append(tokenizer.eos_token_id)
             self.data.append(token_ids)
 
     def __getitem__(self, idx: int) -> List[int]:
@@ -63,8 +66,12 @@ class MyDataset(Dataset):
         List[int]
             Усеченный список номеров токенов
         """
-        return <YOUR CODE HERE>
+        if self.max_length:
+            return self.data[idx][:self.max_length]
+        else:
+            return self.data[idx]
+
 
     def __len__(self) -> int:
         """Возвращает количество текстов в наборе данных."""
-        return <YOUR CODE HERE>
+        return len(self.data)

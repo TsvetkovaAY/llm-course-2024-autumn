@@ -4,8 +4,7 @@ from typing import List, Optional, Callable, Union
 from torch import Tensor
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
-from scripts.model import Model
-
+from model import Model
 
 class Trainer:
     """
@@ -44,7 +43,7 @@ class Trainer:
 
     Пример использования:
     --------------
-    >>> model = Model()  # Ваша модель
+    >>> model = Model() # Ваша модель
     >>> train_data = ...  # Ваш тренировочный датасет
     >>> eval_data = ...  # Ваш датасет для оценки
     >>> trainer = Trainer(model, train_data, eval_data, n_epochs=5, lr=3e-5, train_batch_size=32, eval_batch_size=64)
@@ -96,7 +95,7 @@ class Trainer:
         Возвращает:
             Tensor: Значение потерь.
         """
-        return <YOUR CODE HERE>
+        return self.loss_func(logits, y)
 
     def train(self) -> None:
         """
@@ -110,8 +109,8 @@ class Trainer:
                 iterations += 1
                 self.model.train()
                 # Готовим входы (текущие токены) и выходы (следующие токены)
-                x = <YOUR CODE HERE>
-                y = <YOUR CODE HERE>
+                x = ids[:, :-1]
+                y = ids[:, 1:]
                 # Получаем логиты и считаем лосс
                 logits, _ = self.model(x)
                 loss = self.calc_loss(logits, y)
@@ -134,8 +133,8 @@ class Trainer:
         total_loss = 0.0
         for ids in self.eval_loader:
             # Готовим входы (текущие номера токенов) и выходы (следующие номера токенов)
-            x = <YOUR CODE HERE>
-            y = <YOUR CODE HERE>
+            x = ids[:, :-1]
+            y = ids[:, 1:]
             with (torch.no_grad()):
                 # Получаем логиты и считаем лосс
                 logits, _ = self.model(x)

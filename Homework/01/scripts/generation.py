@@ -2,8 +2,8 @@ import torch
 import numpy as np
 import torch.nn.functional as F
 from typing import Optional
-from scripts.model import Model
-from scripts.tokenizer import ByteTokenizer
+from model import Model
+from tokenizer import ByteTokenizer
 
 
 def generate(
@@ -59,7 +59,7 @@ def generate(
     """
     do_sample = temperature > 0
     gen_ids = []
-    # Изначально подидим в модель токен начала текста и нулевое состояние
+    # Изначально подадим в модель токен начала текста и нулевое состояние
     hx = None
     tokens = torch.tensor([tokenizer.bos_token_id], dtype=torch.long)
 
@@ -70,7 +70,7 @@ def generate(
             logits, hx = model(tokens, hx)
             if not do_sample:
                 # Выбираем наиболее вероятный токен
-                new_token = <YOUR CODE HERE>
+                new_token = torch.argmax(logits, dim=0)[0].item()
             else:
                 logits /= temperature
                 # Получаем вероятностное распределение следующего токена
@@ -78,7 +78,7 @@ def generate(
                 ids = np.arange(len(p))
                 if top_k is not None:
                     # Выбираем top-k наиболее вероятных токенов. Используйте np.argpartition(...)
-                    ids = <YOUR CODE HERE>
+                    ids = np.argpartition(p, -top_k)[-top_k:]
                     p = p[ids] / p[ids].sum()
                 new_token = np.random.choice(ids, p=p)
 
